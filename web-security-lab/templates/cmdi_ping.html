@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta charset="UTF-8"><title>命令注入</title>
+<style>
+    * { margin:0;padding:0;box-sizing:border-box; }
+    body { font-family:'Segoe UI',sans-serif; background:#0d1117; color:#c9d1d9; }
+    .container { max-width:700px; margin:50px auto; padding:20px; }
+    h1 { color:#58a6ff; margin-bottom:8px; }
+    .desc { color:#8b949e; margin-bottom:20px; font-size:0.9em; }
+    .hint { background:#1a1f2b; border-left:3px solid #f0883e; padding:12px; margin-bottom:20px; border-radius:4px; color:#f0883e; font-size:0.9em; }
+    .hint code { background:#21262d; padding:1px 4px; border-radius:3px; }
+    input { width:100%; padding:10px; margin-bottom:10px; background:#161b22; border:1px solid #30363d;
+            border-radius:6px; color:#c9d1d9; font-size:1em; }
+    button { width:100%; padding:10px; background:#238636; color:#fff; border:none; border-radius:6px;
+             font-size:1em; cursor:pointer; }
+    .output { padding:15px; background:#0d1117; border-radius:6px; border:1px solid #30363d; margin-top:20px;
+              white-space:pre-wrap; font-family:'Consolas',monospace; font-size:0.85em; max-height:400px; overflow-y:auto; }
+    a { color:#58a6ff; }
+    .back { margin-top:20px; }
+</style></head>
+<body>
+<div class="container">
+    <h1>💻 命令注入（Command Injection）</h1>
+    <p class="desc">这是一个网络诊断工具，输入 IP 地址执行 ping 命令。试试注入额外的系统命令。</p>
+
+    <div class="hint">
+        💡 <strong>提示：</strong>
+        <details><summary>点击展开</summary>
+            <ul style="margin-top:8px;padding-left:20px;">
+                <li>Windows: <code>127.0.0.1 &amp; whoami</code></li>
+                <li>Windows: <code>127.0.0.1 | dir</code></li>
+                <li>Linux: <code>127.0.0.1; id</code></li>
+                <li>Linux: <code>127.0.0.1 &amp;&amp; cat /etc/passwd</code></li>
+                <li>管道符：<code>|</code> <code>&amp;&amp;</code> <code>;</code> <code>||</code> 都可尝试</li>
+            </ul>
+        </details>
+    </div>
+
+    <form method="post">
+        <input type="text" name="ip" placeholder="输入 IP 地址或域名" value="127.0.0.1">
+        <button type="submit">Ping</button>
+    </form>
+
+    {% if result %}
+    <div class="output">{{ result }}</div>
+    {% endif %}
+
+    <p class="back"><a href="/">← 返回首页</a></p>
+</div>
+</body>
+</html>

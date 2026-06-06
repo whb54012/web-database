@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta charset="UTF-8"><title>CSRF 跨站请求伪造</title>
+<style>
+    * { margin:0;padding:0;box-sizing:border-box; }
+    body { font-family:'Segoe UI',sans-serif; background:#0d1117; color:#c9d1d9; }
+    .container { max-width:600px; margin:50px auto; padding:20px; }
+    h1 { color:#58a6ff; margin-bottom:8px; }
+    .desc { color:#8b949e; margin-bottom:20px; font-size:0.9em; }
+    .hint { background:#1a1f2b; border-left:3px solid #f0883e; padding:12px; margin-bottom:20px; border-radius:4px; color:#f0883e; font-size:0.9em; }
+    .hint code { background:#21262d; padding:1px 4px; border-radius:3px; }
+    input { width:100%; padding:10px; margin-bottom:10px; background:#161b22; border:1px solid #30363d;
+            border-radius:6px; color:#c9d1d9; font-size:1em; }
+    button { width:100%; padding:10px; background:#238636; color:#fff; border:none; border-radius:6px;
+             font-size:1em; cursor:pointer; }
+    .msg { padding:15px; background:#161b22; border-radius:6px; border:1px solid #30363d; margin-top:20px; }
+    .msg.success { border-color:#238636; }
+    .attack-demo { background:#1a1f2b; border:1px solid #f0883e; padding:15px; border-radius:6px; margin-top:20px; }
+    .attack-demo h4 { color:#f0883e; }
+    .attack-demo code { display:block; background:#0d1117; padding:10px; border-radius:4px; margin-top:8px;
+                        white-space:pre-wrap; font-size:0.8em; color:#7ee787; }
+    a { color:#58a6ff; }
+    .back { margin-top:20px; }
+</style></head>
+<body>
+<div class="container">
+    <h1>💸 CSRF 跨站请求伪造</h1>
+    <p class="desc">这个转账页面没有 CSRF 防护。攻击者可以构造一个恶意页面，诱导用户点击后自动发起转账。</p>
+
+    <div class="hint">
+        💡 <strong>提示：</strong>
+        <details><summary>点击展开</summary>
+            <ul style="margin-top:8px;padding-left:20px;">
+                <li>该页面没有 CSRF Token 验证</li>
+                <li>攻击者可以隐藏在不可见的 iframe 或自动提交的表单</li>
+                <li>防御：添加 CSRF Token、验证 Referer、SameSite Cookie</li>
+            </ul>
+        </details>
+    </div>
+
+    <form method="post">
+        <input type="text" name="to" placeholder="收款人">
+        <input type="text" name="amount" placeholder="金额">
+        <button type="submit">转账</button>
+    </form>
+
+    {% if message %}
+    <div class="msg success">{{ message }}</div>
+    {% endif %}
+
+    <div class="attack-demo">
+        <h4>🛡️ 攻击演示：这是攻击者可能构造的恶意 HTML 页面</h4>
+        <code>&lt;!-- 用户一旦访问此页面，就会自动发起转账 --&gt;
+&lt;html&gt;
+&lt;body onload="document.forms[0].submit()"&gt;
+  &lt;form action="http://127.0.0.1:5000/csrf/transfer" method="POST"&gt;
+    &lt;input name="to" value="attacker"&gt;
+    &lt;input name="amount" value="999999"&gt;
+  &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code>
+    </div>
+
+    <p class="back"><a href="/">← 返回首页</a></p>
+</div>
+</body>
+</html>

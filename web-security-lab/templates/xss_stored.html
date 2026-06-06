@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta charset="UTF-8"><title>存储型 XSS</title>
+<style>
+    * { margin:0;padding:0;box-sizing:border-box; }
+    body { font-family:'Segoe UI',sans-serif; background:#0d1117; color:#c9d1d9; }
+    .container { max-width:600px; margin:50px auto; padding:20px; }
+    h1 { color:#58a6ff; margin-bottom:8px; }
+    .desc { color:#8b949e; margin-bottom:20px; font-size:0.9em; }
+    .hint { background:#1a1f2b; border-left:3px solid #f0883e; padding:12px; margin-bottom:20px; border-radius:4px; color:#f0883e; font-size:0.9em; }
+    .hint code { background:#21262d; padding:1px 4px; border-radius:3px; }
+    textarea { width:100%; padding:10px; margin-bottom:10px; background:#161b22; border:1px solid #30363d;
+               border-radius:6px; color:#c9d1d9; font-size:1em; resize:vertical; min-height:80px; }
+    button { width:100%; padding:10px; background:#238636; color:#fff; border:none; border-radius:6px;
+             font-size:1em; cursor:pointer; }
+    .comment { background:#161b22; border:1px solid #30363d; padding:12px; margin:8px 0; border-radius:6px; }
+    .comment .id { color:#8b949e; font-size:0.8em; }
+    a { color:#58a6ff; }
+    .back { margin-top:20px; }
+</style></head>
+<body>
+<div class="container">
+    <h1>📝 存储型 XSS（跨站脚本攻击）</h1>
+    <p class="desc">评论内容直接存入数据库且不经过滤，任何访问此页面的人都会执行你注入的脚本。</p>
+
+    <div class="hint">
+        💡 <strong>提示：</strong>
+        <details><summary>点击展开</summary>
+            <ul style="margin-top:8px;padding-left:20px;">
+                <li><code>&lt;script&gt;alert('XSS')&lt;/script&gt;</code></li>
+                <li><code>&lt;img src=x onerror=alert(document.cookie)&gt;</code></li>
+                <li>存储型 XSS 的危害更大——所有访客都会被攻击</li>
+            </ul>
+        </details>
+    </div>
+
+    <form method="post">
+        <textarea name="content" placeholder="写下你的评论..."></textarea>
+        <button type="submit">提交评论</button>
+    </form>
+
+    <h3 style="margin-top:25px;color:#58a6ff;">评论区：</h3>
+    {% for c in comments %}
+    <div class="comment">
+        <div class="id">#{{ c.id }}</div>
+        <div>{{ c.content|safe }}</div>  <!-- ⚠️ 故意不转义 -->
+    </div>
+    {% else %}
+    <p style="color:#8b949e;">暂无评论</p>
+    {% endfor %}
+
+    <p class="back"><a href="/">← 返回首页</a></p>
+</div>
+</body>
+</html>
