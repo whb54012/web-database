@@ -8,8 +8,8 @@
 
 ```python
 # 不安全的代码
-ip = request.form['ip']
-os.system(f"ping -c 3 {ip}")
+$ip = $_GET['ip']/$_POST['ip']
+echo system('ping $ip')
 ```
 
 正常输入 `127.0.0.1`：
