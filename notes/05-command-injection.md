@@ -6,22 +6,22 @@
 
 ## 🧠 原理
 
-```python
+```php
 # 不安全的代码
 $ip = $_GET['ip']/$_POST['ip']
-echo system('ping $ip')
+echo system('ping'.$ip)
 ```
 
 正常输入 `127.0.0.1`：
 
 ```bash
-ping -c 3 127.0.0.1
+ping 127.0.0.1
 ```
 
 攻击者输入 `127.0.0.1; cat /etc/passwd`：
 
 ```bash
-ping -c 3 127.0.0.1; cat /etc/passwd
+ping 127.0.0.1; cat /etc/passwd
                       └────── 第二条命令也执行了！
 ```
 
@@ -52,9 +52,9 @@ ping -c 3 127.0.0.1; cat /etc/passwd
 ### ✅ 方案 1：不要调用系统命令（最好）
 
 用库函数替代：
-```python
+```php
 # ❌ 不要这样
-os.system(f"ping {ip}")
+echo system('系统命令')
 
 # ✅ 用 Python 内置
 import subprocess
