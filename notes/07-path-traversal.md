@@ -23,25 +23,23 @@
 → /etc/passwd                     😱
 ```
 
-## 🎯 靶场练习 7：路径遍历
+## 🎯 动手实验
 
-打开 `http://127.0.0.1:5000/file/view`
-
-### 练习
+### 测试
 
 ```bash
-# 先读取靶场自己的代码
+# 先读取应用自己的代码
 ?file=app.py
 
 # 向上跳
-?file=../web-security-lab/app.py
-?file=../../Users/whb/hacker-database/web-security-lab/app.py
+?file=../app.py
+?file=../../app.py
 
 # Windows 系统文件
 ?file=../../../windows/win.ini
 ?file=../../../windows/system32/drivers/etc/hosts
 
-# Linux 系统文件（如果在 Linux 运行）
+# Linux 系统文件
 ?file=../../../etc/passwd
 ?file=../../../etc/shadow
 ```
@@ -137,9 +135,9 @@ if (str_contains($filename, '..') || str_contains($filename, '/') || str_contain
 
 ## 📝 练习
 
-1. 在靶场读取 `app.py` 源码
+1. 读取 `app.py` 源码
 2. 尝试读取系统文件
-3. 思考：`os.path.realpath` 为什么能防路径遍历？
+3. 思考：`realpath()` 为什么能防路径遍历？
 
 ---
 

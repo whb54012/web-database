@@ -21,16 +21,14 @@ $user = $db->query("SELECT * FROM users WHERE id=$user_id")->fetch();
 // ⚠️ 没有检查当前登录用户是否有权看这个 ID！
 ```
 
-## 🎯 靶场练习 8：IDOR
+## 🎯 动手实验
 
-打开 `http://127.0.0.1:5000/idor/profile`
-
-### 练习
+### 测试
 
 ```
-1. 访问 /idor/profile?id=1       → 看到 admin 用户和密码
-2. 改成 /idor/profile?id=2       → 看到 test 用户和密码
-3. 改成 /idor/profile?id=3       → 看到 alice 用户和密码
+1. 访问 /profile?id=1       → 看到 admin 用户和密码
+2. 改成 /profile?id=2       → 看到 test 用户和密码
+3. 改成 /profile?id=3       → 看到 alice 用户和密码
 ```
 
 —— 不需要登录就能看到所有用户的信息！
@@ -119,7 +117,7 @@ $mapping = ['a3f2b1c' => 123, 'd4e5f6g' => 456];
 
 ## 📝 练习
 
-1. 在靶场尝试不同 ID，观察返回结果
+1. 尝试不同 ID，观察返回结果
 2. 思考：遇到 UUID 作为 ID 就安全了吗？
 
 ---
