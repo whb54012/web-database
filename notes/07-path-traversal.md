@@ -89,44 +89,48 @@
 ### ✅ 1. 不使用用户输入构造路径（最好）
 
 用 ID 映射而非直接传文件路径：
-```python
-# ❌ 不安全
-open(os.path.join(BASE, request.args['file']))
+```php
+// ❌ 不安全
+readfile(BASE . '/' . $_GET['file']);
 
-# ✅ 安全
-file_map = {'1': 'report.pdf', '2': 'summary.pdf'}
-filename = file_map.get(request.args['id'])
+// ✅ 安全
+$file_map = ['1' => 'report.pdf', '2' => 'summary.pdf'];
+$filename = $file_map[$_GET['id']] ?? null;
 ```
 
 ### ✅ 2. 白名单
 
-```python
-ALLOWED = {'app.py', 'config.ini', 'README.md'}
-if filename not in ALLOWED:
-    abort(403)
+```php
+$ALLOWED = ['app.py', 'config.ini', 'README.md'];
+if (!in_array($filename, $ALLOWED)) {
+    http_response_code(403);
+    exit;
+}
 ```
 
 ### ✅ 3. 规范化路径 + 验证前缀
 
-```python
-import os
+```php
+$base = '/var/www/safe/';
+$user_path = $_GET['file'];
 
-base = '/var/www/safe/'
-user_path = request.args['file']
+// 解析 ../ 得到真实路径
+$real_path = realpath($base . '/' . $user_path);
 
-# 解析 ../ 得到真实路径
-real_path = os.path.realpath(os.path.join(base, user_path))
-
-# 确保真实路径在允许的目录内
-if not real_path.startswith(base):
-    abort(403)
+// 确保真实路径在允许的目录内
+if (!str_starts_with($real_path, $base)) {
+    http_response_code(403);
+    exit;
+}
 ```
 
 ### ✅ 4. 去除危险字符
 
-```python
-if '..' in filename or '/' in filename or '\\' in filename:
-    abort(403)
+```php
+if (str_contains($filename, '..') || str_contains($filename, '/') || str_contains($filename, '\\')) {
+    http_response_code(403);
+    exit;
+}
 ```
 
 ---

@@ -6,11 +6,11 @@ SQL 注入是最经典的 Web 漏洞之一。当应用把**用户输入直接拼
 
 ## 🧠 原理
 
-```python
-# 正常代码
-username = request.form['username']
-password = request.form['password']
-sql = f"SELECT * FROM users WHERE username='{username}' AND password='{password}'"
+```php
+// 正常代码
+$username = $_POST['username'];
+$password = $_POST['password'];
+$sql = "SELECT * FROM users WHERE username='$username' AND password='$password'";
 ```
 
 当用户输入 `admin` / `admin123`：
@@ -40,27 +40,30 @@ SELECT * FROM users WHERE username='admin' OR '1'='1' --' AND password='xxx'
 ## 🛡️ 防御方法
 
 ### ❌ 错误做法
-```python
-sql = f"SELECT * FROM users WHERE username='{username}'"
+```php
+$sql = "SELECT * FROM users WHERE username='$username'";
 ```
 
 ### ✅ 正确做法
 
 **1. 参数化查询（首选）**
-```python
-cursor.execute("SELECT * FROM users WHERE username=?", (username,))
+```php
+$stmt = $pdo->prepare("SELECT * FROM users WHERE username=?");
+$stmt->execute([$username]);
 ```
 
 **2. ORM 框架**
-```python
-User.objects.filter(username=username)
+```php
+// Laravel Eloquent
+User::where('username', $username)->get();
 ```
 
 **3. 输入校验 + 白名单**
-```python
-# 用户名只能包含字母数字
-if not username.isalnum():
-    raise ValueError("非法用户名")
+```php
+// 用户名只能包含字母数字
+if (!ctype_alnum($username)) {
+    throw new Exception("非法用户名");
+}
 ```
 
 **4. 最小权限原则**

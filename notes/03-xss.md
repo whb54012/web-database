@@ -82,10 +82,10 @@ HTML 实体编码后: &lt;script&gt;alert(1)&lt;/script&gt;
 浏览器显示: <script>alert(1)</script>  ← 纯文本，不执行！
 ```
 
-```python
-# Flask/Jinja2 默认自动转义
-{{ user_input }}   # ✅ 安全
-{{ user_input|safe }}  # ❌ 危险！
+```php
+// PHP 转义输出
+echo htmlspecialchars($user_input, ENT_QUOTES, 'UTF-8');   // ✅ 安全
+echo $user_input;                                           // ❌ 危险！直接输出
 ```
 
 ### ✅ 2. Content-Security-Policy (CSP)

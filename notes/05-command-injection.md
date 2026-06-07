@@ -56,26 +56,27 @@ ping 127.0.0.1; cat /etc/passwd
 # ❌ 不要这样
 echo system('系统命令')
 
-# ✅ 用 Python 内置
-import subprocess
-subprocess.run(['ping', '-c', '3', ip], timeout=5)
+// ✅ 用 PHP 内置
+$ip = escapeshellarg($ip);
+exec("ping -c 3 $ip", $output, $retval);
 ```
 
 ### ✅ 方案 2：参数化
 
-```python
-# ✅ 数组形式参数化（防止注入）
-subprocess.run(['ping', '-c', '3', ip], shell=False)
+```php
+// ✅ 使用 escapeshellarg 参数化（防止注入）
+$ip = escapeshellarg($ip);
+exec("ping -c 3 $ip", $output, $retval);
 ```
 
 关键：`shell=False`（默认），不要把整个命令作为字符串传给 shell。
 
 ### ✅ 方案 3：白名单校验
 
-```python
-import re
-if not re.match(r'^[0-9.]+$', ip):
-    raise ValueError("非法 IP 地址")
+```php
+if (!preg_match('/^[0-9.]+$/', $ip)) {
+    throw new Exception("非法 IP 地址");
+}
 ```
 
 ## 💀 命令注入能做什么？

@@ -61,8 +61,8 @@ http://metadata.tencentyun.com/latest/meta-data/
 
 ### 3. 读取本地文件
 
-```python
-# 如果底层使用 libcurl 且支持 file 协议
+```php
+// 如果底层使用 libcurl 且支持 file 协议
 file:///etc/passwd
 file:///C:/Windows/win.ini
 ```
@@ -102,17 +102,26 @@ file:///C:/Windows/win.ini
 
 ### ✅ 1. URL 白名单
 
-```python
-ALLOWED_DOMAINS = {'api.example.com', 'cdn.example.com'}
+```php
+$ALLOWED_DOMAINS = ['api.example.com', 'cdn.example.com'];
 ```
 
 ### ✅ 2. 禁止内网 IP
 
-```python
-import socket, ipaddress
-ip = socket.gethostbyname(hostname)
-if ipaddress.ip_address(ip).is_private:
-    raise ValueError("禁止访问内网地址")
+```php
+$ip = gethostbyname($hostname);
+// 检查是否为内网 IP（RFC 1918）
+$private_ranges = [
+    ['10.0.0.0', '10.255.255.255'],
+    ['172.16.0.0', '172.31.255.255'],
+    ['192.168.0.0', '192.168.255.255'],
+    ['127.0.0.0', '127.255.255.255'],
+];
+foreach ($private_ranges as $range) {
+    if (ip2long($ip) >= ip2long($range[0]) && ip2long($ip) <= ip2long($range[1])) {
+        throw new Exception("禁止访问内网地址");
+    }
+}
 ```
 
 ### ✅ 3. DNS 重绑定检测

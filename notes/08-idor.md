@@ -12,14 +12,13 @@ URL: /profile?id=1   → 看到用户 1 的信息
 改成: /profile?id=3   → 看到用户 3 的信息！
 ```
 
-```python
-# 不安全的代码
-@app.route('/profile')
-def profile():
-    user_id = request.args['id']
-    user = db.query(f"SELECT * FROM users WHERE id={user_id}")
-    return render_template('profile.html', user=user)
-    # ⚠️ 没有检查当前登录用户是否有权看这个 ID！
+```php
+// 不安全的代码
+// profile.php
+$user_id = $_GET['id'];
+$user = $db->query("SELECT * FROM users WHERE id=$user_id")->fetch();
+// 渲染到模板展示
+// ⚠️ 没有检查当前登录用户是否有权看这个 ID！
 ```
 
 ## 🎯 靶场练习 8：IDOR
@@ -85,35 +84,35 @@ def profile():
 
 ### ✅ 1. 使用当前用户上下文（最重要）
 
-```python
-# ✅ 安全的代码
-@app.route('/profile')
-@login_required
-def profile():
-    user = db.query("SELECT * FROM users WHERE id=?", (current_user.id,))
-    return render_template('profile.html', user=user)
-    # 直接取当前登录用户的 ID，不接收参数
+```php
+// ✅ 安全的代码
+// profile.php
+if (!isset($_SESSION['user_id'])) { header('Location: /login'); exit; }
+$stmt = $pdo->prepare("SELECT * FROM users WHERE id=?");
+$stmt->execute([$_SESSION['user_id']]);
+$user = $stmt->fetch();
+// 直接取当前登录用户的 ID，不接收参数
 ```
 
 ### ✅ 2. 验证权限
 
-```python
-@app.route('/order/<order_id>')
-@login_required
-def view_order(order_id):
-    order = Order.get(order_id)
-    if order.user_id != current_user.id:
-        abort(403)  # 不是你的订单
-    return render_template('order.html', order=order)
+```php
+// order.php?order_id=123
+if (!isset($_SESSION['user_id'])) { header('Location: /login'); exit; }
+$order = Order::find($_GET['order_id']);
+if ($order->user_id != $_SESSION['user_id']) {
+    http_response_code(403);
+    exit;  // 不是你的订单
+}
 ```
 
 ### ✅ 3. 使用间接引用
 
-```python
-# 不用真实 ID，用随机的引用标识
-# URL: /order/a3f2b1c  (不是 /order/123)
+```php
+// 不用真实 ID，用随机的引用标识
+// URL: /order/a3f2b1c  (不是 /order/123)
 
-mapping = {'a3f2b1c': 123, 'd4e5f6g': 456}
+$mapping = ['a3f2b1c' => 123, 'd4e5f6g' => 456];
 ```
 
 ---

